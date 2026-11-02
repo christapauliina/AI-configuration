@@ -1,6 +1,6 @@
 # AI BASICS
 
-Broadly, we tend to think that you simply gather training data, feed it through a neural network, and *voila* you have an LLM. The underlying assumption is that a bigger dataset and a larger neural network automatically result in a more capable and intelligent model. The reality is far more complex.
+Broadly, we tend to think that you simply gather training data, feed it through a neural network, and *voila* you have an LLM. There is an underlying assumption that a bigger dataset and a larger neural network automatically result in a more capable and intelligent model. The reality is far more complex.
 
 
 ## Introduction
