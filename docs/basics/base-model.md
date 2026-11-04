@@ -78,10 +78,16 @@ When the frontier models are growing to larger scale, there is somewhat an issue
 
 ## Tokenization
 
+Before feeding the training data to a model, the data must be transformed into a form that a machine can understand. In a wild simplification, the raw training data is first broken down into a sequence of symbols known as tokens, after which all the tokens are fed to an algorithm that builds a token vocabulary for the model.
+
+Regarding to tokenizing there is two main things to consider - what size the tokens are and how many we'll fit to models vocabulary. Both are 
 
 ## Pre-training
-## Summary
+## Wrap-up
 
+As a final thought, each decision on building a base model must be viewed as part of a whole rather than in isolation. For most use cases below the frontier, performance targets can largely be met simply by scaling up model size. In practice financial constraints make this a non-option for many builders — which is exactly why architectural choices and training efficiency matter. Furthermore, as technology advances and collective knowledge grows, training base models will likely become somewhat cheaper. I personally believe this will lead to a broader rollout of domain-specific base models across various industries. 
+
+## Deeper reads:
 
 https://arxiv.org/pdf/2001.08361
-  https://arxiv.org/pdf/2308.09884
+https://arxiv.org/pdf/2308.09884
