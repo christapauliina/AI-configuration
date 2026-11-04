@@ -4,7 +4,9 @@ Building an AI model from scratch starts by creating a base model. A base model 
 
 In this section, we will explore what goes into creating a base model: what kind of decisions we can or must make, keeping the purpose of the final model in mind. A big part of decision-making is related to costs: training a base model is the most expensive part of creating a modern LLM, and many of these choices also directly affect the future operational expenses of the model.
 
-This is not a deep dive into neural networks or core LLM principles. It is simply a demonstrative look at different engineering tactics in base model creation that affect the final model outcome.
+This is not a deep dive into neural networks or transformes. It is simply a demonstrative look at different engineering tactics in base model creation that affect the final model outcome, so there will be some simplifycations pointed in the deeper tecnhical aspects.
+
+
 
 ### Table of Contents
   - [Architecture](#Architecture)
@@ -12,6 +14,9 @@ This is not a deep dive into neural networks or core LLM principles. It is simpl
   - [Tokenization](#Tokenization)
   - [Pre-training](#Pre-training)
   - [Summary](#Summary)
+
+  
+
 
 ## Architecture
 
@@ -27,7 +32,7 @@ The engine of every modern LLM is an architecture called the Transformer. Transf
 
 The difference is that the encoder has something called “Bidirectional Self-Attention”, where tokens evaluate themselves and all the tokens before and after. The decoder has a causal mask, so it can only view the token in evaluation and tokens before that, limiting its view to the present and past. Encoder's abilities lie in understanding the input sequence and its context, whereas decoders are good at regenerating text in natural language. Without getting too deep into theory, let's review some practical applications:
 
-  ### Encoder-Decoder-Style Transformers
+  #### Encoder-Decoder-Style Transformers
 The origin of transformers, created for translating languages into other languages. The encoder reads the input sequence and understands it. The decoder writes the output based on what the encoder understood and what it has produced itself. Although originally designed for translation, this architecture is ideally suited for any task that requires transforming one type of sequence into another:
 
   + Text summarization
@@ -36,7 +41,7 @@ The origin of transformers, created for translating languages into other languag
 
 Given the Encoder-Decoder-style transformer's ability to *transform* inputs to outputs, its utility reaches beyond natural language processing. For example, this kind of architecture has been used successfully in studies where it was applied to process sequential time-series data and predict remaining useful life (RUL) in industrial equipment.
 
-  ### Encoder-Only Transformers
+  #### Encoder-Only Transformers
 Encoder-Only transformers can't generate text; instead, they produce vectors as an output. Encoder-Only architecture is used in various tasks, for example:
 
   + Text classification tasks (spam detection, language identification, sentiment analysis...)
@@ -44,14 +49,20 @@ Encoder-Only transformers can't generate text; instead, they produce vectors as 
   + Semantic search (RAG solutions)
     + Does not need a task-specific head; the output vector (embedding) is the final product.
   
-  ### Decoder-Only Transformers
+  #### Decoder-Only Transformers
 Decoder-only transformers are the core of all modern AI assistants and chatbots. Its main capability is to predict the next token (word) and generate text by adding the produced token to the input sequence and predicting the next token. The decoder-only architecture rules the AI world due to its versatility and ability to handle a wide variety of tasks.
-
 
 ### Defining the dimensions
 
+Regarding the overall architecture of a model, we must define its depth and width, which determine the model's overall size. Width defines the size of the vector used to represent a token inside the model. The wider the vector, the more meanings and nuances can be encoded for an individual token, leading to a more nuanced understanding by the model. 
 
+Depht is simply a represation of how many transformers is stacked on top of eachother. The more depth the model have, the more complex chain of reasoning model will be able to do.
 
+Altough depth and widht includes many interesting qualities and technical aspects, in 2020 Kaplan etc. showed that in view of a models performace the main factor is overall size, not the relationship between widht and depth, as long as dimensions are in reasonable relation to eachother. When referring to a model's size, the unit used is parameters. To keep this presentation demonstrative, we won't dive into the technical depths of why model size is calculated the way it is. However, since the size isn't simply depth x width and parameter quantity is widely used when describing models, I think it's worth taking a quick look at:
+
+***Quantity of Parameters =  V · d<sub>model</sub> + 12 · L · d<sup>2</sup><sub>model</sub>***
+
+In the equation above, ***V*** represents the model's vocabulary size, ***d<sub>model</sub>***  the width, and ***L***  the number of transformers, i.e., layers or depth. The presented equation is a simplified approximation of the model size, but sufficiently valid in this context.
 
 ## Training data
 ## Tokenization
@@ -59,5 +70,5 @@ Decoder-only transformers are the core of all modern AI assistants and chatbots.
 ## Summary
 
 
-
+https://arxiv.org/pdf/2001.08361
   https://arxiv.org/pdf/2308.09884
