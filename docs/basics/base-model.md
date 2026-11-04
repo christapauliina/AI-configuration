@@ -70,12 +70,15 @@ The quantity of training data should be in some relation to the model's size. In
 In recent years, following major breakthroughs in understanding the relationship between training data size and model performance, the focus has been shifting toward training data quality.  "Garbage in, garbage out" - applies also to LLM:s. The vast majority of raw training data is scraped from internet by bots, most of which is unusable in its initial state. Raw data needs to be cleaned an de-duplicated. For example, datasets like Common Crawl—containing petabytes of raw HTML from the web—yield only 1% to 10% usable text depending on the filtering. We wont be diving deeper into the cleaning of raw data. 
 
 When evaluating dataset quality, it can be viewed from several  perspectives:
-  + **Diversity and balance**  
-  + **Informational density**
-  + **Safety**
+  + **Diversity and balance** Training datas coverage across different domains, perspectives and language improves generalization and prevents bias
+  + **Informational density** Content with reasing and substance vs. low value text
+  + **Safety** Leaving out unaccurate and toxic material and filtering personal identifiable information
+
 When the frontier models are growing to larger scale, there is somewhat an issue of availability of enough quality training data. Therefore in some models are part of the training data is synthetic data, which is AI generated high quality text and reasoning. 
 
 ## Tokenization
+
+
 ## Pre-training
 ## Summary
 
