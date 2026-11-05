@@ -20,8 +20,8 @@ Before diving into architectural options and choices, it is crucial to define th
 
 Clearly define your expected tasks, task priorities (such as speed, accuracy, and cost), and the resources allocated for both training the base model and running the final product. 
 
-### Choosing the Engine
-When we think of an LLM, the first association is usually some kind of chatbot or AI assistant, such as ChatGPT or Gemini. Despite strong associations, not all LLMs are built strictly for chatting with users. You can also use an LLM for tasks like text classification, code generation, or text summarization, although different tasks may need a different kind of engine.
+### Choosing transformers
+When we think of an LLM, the first association is usually some kind of chatbot or AI assistant, such as ChatGPT or Gemini. Despite strong associations, not all LLMs are built strictly for chatting with users. You can also use an LLM for tasks like text classification, code generation, or text summarization.
 
 The engine of every modern LLM is an architecture called the Transformer. Transformers process sequences of tokens and create an output sequence through layers of decoder and/or encoder blocks. Encoder and decoder have similarities: both include positional encoding, residual connections, layer norms, and a feed-forward network. 
 
@@ -85,15 +85,14 @@ In character-level tokenization, the input sequence length increases, causing th
 #### Word-level tokenization
 Tokenization that splits raw text into words based on whitespace or punctuation is called word-level tokenization. As words carry semantic meaning, models based on word-level tokenization grasp meanings more effectively and perform better in complex reasoning. The main issues are, firstly, that with word-level tokenization the vocabulary size increases substantially, increasing the model size and therefore making training and running the model expensive. Secondly, pure word-based models suffer from the OOV (Out-Of-Vocabulary) problem, where new words, inflections, and compound forms cannot be recognized if they are not included in the model's vocabulary. Even a wrong or different spelling of a word can confuse the model. Word-based vocabulary is especially unfit for morphologically rich or low-resource languages
 #### Subword-level tokenization
-In modern models, a solution has been found in between word-level and character-level tokenization as they use sub-word tokenization. As a core principle of sub-word tokenization, frequently used words remain intact in the vocabulary, while rarer words are broken into smaller sequences. For example, the verb "use" could be a token itself, but reuse could be broken into two tokens: re and use. There are many different options for algorithms that do sub-word tokenization, but most of them have characters or bytes for special characters included by default, which eliminates the OOV problem. Since there is always a possibility to break a word into smaller components, there is no situation where an unknown word could appear. Sub-word tokenization combines the best qualities of word-level and character-level tokenization. Models that are based on sub-word tokenization are able to understand meaning efficiently, perform well at complex reasoning, and are also suited for morphologically rich or low-resource languages. Sub-word tokenization allows keeping the vocabulary size moderate, which makes training and running the model more cost-efficient.
+In modern models, a solution has been found in between word-level and character-level tokenization as they use sub-word tokenization. As a core principle of sub-word tokenization, frequently used words remain intact in the vocabulary, while rarer words are broken into smaller sequences. For example, the verb "use" could be a token itself, but reuse could be broken into two tokens: "re" and "use". There are many different options for algorithms that do sub-word tokenization, but most of them have characters (or bytes for special characters) included by default, which eliminates the OOV problem. Since there is always a possibility to break a word into smaller components, there is no situation where an unknown word could appear. 
 
-### Vocabulary
+Sub-word tokenization combines the best qualities of word-level and character-level tokenization. Models that are based on sub-word tokenization are able to understand meaning efficiently, perform well at complex reasoning, and are also suited for morphologically rich or low-resource languages. Sub-word tokenization allows keeping the vocabulary size moderate, which makes training and running the model more cost-efficient.
 
+#### Vocabulary Size Trade-offs
+Vocabulary size is directly coupled with the tokenization strategy. In most subword tokenization algorithms, the target vocabulary size must be defined before building the tokenizer. Choosing size of vocabulary is a direct trade-off between model efficiency and input efficiency, and it should always be balanced against the overall width and depth of the model.
 
-
-
-
-
+A vocabulary that is too large in relation to the model's dimensions reserves big a part of memory just to store the model's "knowledge", which takes away from the actual "thinking" process and reduces overall performance. Too small a vocabulary creates the same kind of negative effects as character-level tokenization. Finding the right size is a balancing act between the model's performance and computational efficiency. The vocabulary can be aggregated from the training data, parts of training data, or from a separately aggregated vocabulary.
 
 ## Pre-training
 ## Wrap-up
