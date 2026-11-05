@@ -49,9 +49,7 @@ Decoder-only transformers are the core of all modern AI assistants and chatbots.
 
 ### Defining the dimensions
 
-Regarding the overall architecture of a model, we must define its depth and width, which determine the model's overall size. Width defines the size of the vector used to represent a token inside the model. The wider the vector, the more meanings and nuances can be encoded for an individual token, leading to a more nuanced understanding by the model. 
-
-Depht is simply a represation of how many transformers is stacked on top of eachother. The more depth the model have, the more complex chain of reasoning model will be able to do.
+Regarding the overall architecture of a model, we must define its depth and width, which determine the model's overall size. Width defines the size of the vector used to represent a token inside the model. The wider the vector, the more meanings and nuances can be encoded for an individual token, leading to a more nuanced understanding by the model. Depht is simply a representation of how many transformers is stacked on top of eachother. The more depth the model have, the more complex chain of reasoning model will be able to do.
 
 Altough depth and widht includes many interesting qualities and technical aspects, in 2020 Kaplan etc. showed that in view of a models performace the main factor is overall size, not the relationship between widht and depth, as long as dimensions are in reasonable relation to eachother. When referring to a model's size, the unit used is parameters. To keep this presentation demonstrative, we won't dive into the technical depths of why model size is calculated the way it is. However, since the size isn't simply depth x width and parameter quantity is widely used when describing models, I think it's worth taking a quick look at:
 
@@ -71,16 +69,31 @@ In recent years, following major breakthroughs in understanding the relationship
 
 When evaluating dataset quality, it can be viewed from several  perspectives:
   + **Diversity and balance** Training datas coverage across different domains, perspectives and language improves generalization and prevents bias
-  + **Informational density** Content with reasing and substance vs. low value text
+  + **Informational density** Content with reasoning and substance vs. low value text
   + **Safety** Leaving out unaccurate and toxic material and filtering personal identifiable information
 
-When the frontier models are growing to larger scale, there is somewhat an issue of availability of enough quality training data. Therefore in some models are part of the training data is synthetic data, which is AI generated high quality text and reasoning. 
+When the frontier models are growing to larger scale, there is somewhat an issue of availability of enough quality training data. Therefore in some models part of the training data is synthetic data, which is AI generated high quality text and reasoning. 
 
 ## Tokenization
+Before feeding the training data to a model, the data must be transformed into a form that a machine can understand. In a wild simplification, the raw training data is first broken down into a sequence of symbols known as tokens, after which all the tokens are fed to an algorithm that builds a token vocabulary for the model. Regarding to tokenizing there is two main things to consider - what size the tokens are and how many we'll fit to models vocabulary. Both play a big part in models performance.
 
-Before feeding the training data to a model, the data must be transformed into a form that a machine can understand. In a wild simplification, the raw training data is first broken down into a sequence of symbols known as tokens, after which all the tokens are fed to an algorithm that builds a token vocabulary for the model.
+### Tokenizer
+A tokenizer is a tool used to convert raw text into smaller sequences. In natural language processing, the main types of tokenization are word-level, character-level, and subword-level. The smaller the unit, the more memory and computation the model needs to process inputs. 
 
-Regarding to tokenizing there is two main things to consider - what size the tokens are and how many we'll fit to models vocabulary. Both are 
+#### Character-level tokenization
+In character-level tokenization, the input sequence length increases, causing the context window to fill more rapidly and making the model quite compute-heavy to run. On the other hand, character-level tokenization significantly decreases the model's vocabulary size, as there are far fewer unique characters than words. Morphologically rich and low-resource languages can take advantage of character-level tokenization because it captures the internal structure of the language effectively. The main issue is that individual characters do not carry semantic meaning like words do. Character-level tokenization makes it harder for the model to achieve a deep understanding of meaning and can perform poorly on tasks that demand complex reasoning.
+#### Word-level tokenization
+Tokenization that splits raw text into words based on whitespace or punctuation is called word-level tokenization. As words carry semantic meaning, models based on word-level tokenization grasp meanings more effectively and perform better in complex reasoning. The main issues are, firstly, that with word-level tokenization the vocabulary size increases substantially, increasing the model size and therefore making training and running the model expensive. Secondly, pure word-based models suffer from the OOV (Out-Of-Vocabulary) problem, where new words, inflections, and compound forms cannot be recognized if they are not included in the model's vocabulary. Even a wrong or different spelling of a word can confuse the model. Word-based vocabulary is especially unfit for morphologically rich or low-resource languages
+#### Subword-level tokenization
+In modern models, a solution has been found in between word-level and character-level tokenization as they use sub-word tokenization. As a core principle of sub-word tokenization, frequently used words remain intact in the vocabulary, while rarer words are broken into smaller sequences. For example, the verb "use" could be a token itself, but reuse could be broken into two tokens: re and use. There are many different options for algorithms that do sub-word tokenization, but most of them have characters or bytes for special characters included by default, which eliminates the OOV problem. Since there is always a possibility to break a word into smaller components, there is no situation where an unknown word could appear. Sub-word tokenization combines the best qualities of word-level and character-level tokenization. Models that are based on sub-word tokenization are able to understand meaning efficiently, perform well at complex reasoning, and are also suited for morphologically rich or low-resource languages. Sub-word tokenization allows keeping the vocabulary size moderate, which makes training and running the model more cost-efficient.
+
+### Vocabulary
+
+
+
+
+
+
 
 ## Pre-training
 ## Wrap-up
