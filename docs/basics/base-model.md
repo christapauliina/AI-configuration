@@ -75,10 +75,10 @@ When evaluating dataset quality, it can be viewed from several  perspectives:
 When the frontier models are growing to larger scale, there is somewhat an issue of availability of enough quality training data. Therefore in some models part of the training data is synthetic data, which is AI generated high quality text and reasoning. 
 
 ## Tokenization
-Before feeding the training data to a model, the data must be transformed into a form that a machine can understand. In a wild simplification, the raw training data is first broken down into a sequence of symbols known as tokens, after which all the tokens are fed to an algorithm that builds a token vocabulary for the model. Regarding to tokenizing there is two main things to consider - what size the tokens are and how many we'll fit to models vocabulary. Both play a big part in models performance.
+Before feeding the training data to a model, the data must be transformed into a form that a machine can understand. In a wild simplification, the raw training data is first broken down into a sequence of symbols known as tokens, assigned a numerical ID for each token, and used to create a vocabulary for the model. Regarding tokenization, there are two main things to consider — what size the tokens are and how many will fit into the model's vocabulary. Both play a big part in the model's performance and are tightly coupled to each other.
 
 ### Tokenizer
-A tokenizer is a tool used to convert raw text into smaller sequences. In natural language processing, the main types of tokenization are word-level, character-level, and subword-level. The smaller the unit, the more memory and computation the model needs to process inputs. 
+A tokenizer is a tool used to convert raw text into smaller sequences (tokens) and creating a vocabulary for the model from those tokens. In natural language processing, the main types of tokenization are word-level, character-level, and subword-level. The smaller the unit, the more memory and computation the model needs to process inputs. 
 
 #### Character-level tokenization
 In character-level tokenization, the input sequence length increases, causing the context window to fill more rapidly and making the model quite compute-heavy to run. On the other hand, character-level tokenization significantly decreases the model's vocabulary size, as there are far fewer unique characters than words. Morphologically rich and low-resource languages can take advantage of character-level tokenization because it captures the internal structure of the language effectively. The main issue is that individual characters do not carry semantic meaning like words do. Character-level tokenization makes it harder for the model to achieve a deep understanding of meaning and can perform poorly on tasks that demand complex reasoning.
@@ -95,6 +95,21 @@ Vocabulary size is directly coupled with the tokenization strategy. In most subw
 A vocabulary that is too large in relation to the model's dimensions reserves big a part of memory just to store the model's "knowledge", which takes away from the actual "thinking" process and reduces overall performance. Too small a vocabulary creates the same kind of negative effects as character-level tokenization. Finding the right size is a balancing act between the model's performance and computational efficiency. The vocabulary can be aggregated from the training data, parts of training data, or from a separately aggregated vocabulary.
 
 ## Pre-training
+
+Pre-training is the main training phase of the base model — the computationally expensive process where the model learns from the prepared training data. At its core, pre-training is a simple task: predict the next token. Given a sequence of tokens, the model is trained to predict what comes next. This is repeated across hundreds of billions or trillions of tokens, and through this process, the model gradually learns grammar, facts, reasoning patterns, and the relationships between concepts.
+
+Despite the simplicity of the objective, the scale of the operation is enormous. Training a frontier model today requires thousands of GPUs or TPUs running in parallel for weeks or months, and the energy and hardware costs can run into the tens or hundreds of millions of dollars.
+
+### Context length
+One important parameter defined before training begins is the context length — the maximum number of tokens the model can "see" at once. A longer context window allows the model to consider more text when making predictions, which is useful for tasks like summarizing long documents or maintaining coherence over long conversations. However, the computational cost of attention scales quadratically with sequence length, meaning doubling the context length roughly quadruples the cost of processing each sequence. Most models are trained with a fixed context length, though there are techniques that extend it after the fact.
+
+### Learning dynamics
+Training does not happen at a constant pace. The learning rate — how aggressively the model updates its weights based on each batch of data — is carefully scheduled across the training run. It typically starts low, ramps up, and then gradually decays toward the end of training. Getting this schedule right matters: too high a learning rate can cause the training to become unstable, while too low a rate wastes compute.
+
+Training runs at this scale are also susceptible to sudden instabilities — sharp spikes in the loss that can derail training. Teams monitor training closely and save checkpoints (snapshots of the model's weights) throughout, so that training can be resumed from a stable point if something goes wrong rather than starting over entirely.
+
+### What the model learns
+By the end of pre-training, the model has not been taught to follow instructions, have a conversation, or perform any specific task. What it has learned is a deep statistical model of language: which words and concepts tend to appear together, how sentences are structured, and a broad base of factual knowledge encoded in its weights. This is why pre-training produces a base model — powerful and knowledgeable, but not yet useful for a specific purpose. That comes next, in post-training.
 ## Wrap-up
 
 As a final thought, each decision on building a base model must be viewed as part of a whole rather than in isolation. For most use cases below the frontier, performance targets can largely be met simply by scaling up model size. In practice financial constraints make this a non-option for many builders — which is exactly why architectural choices and training efficiency matter. Furthermore, as technology advances and collective knowledge grows, training base models will likely become somewhat cheaper. I personally believe this will lead to a broader rollout of domain-specific base models across various industries. 
