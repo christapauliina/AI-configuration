@@ -1,4 +1,4 @@
-## Pre-training
+# Pre-training
 
 ### Amount of Computation 
 

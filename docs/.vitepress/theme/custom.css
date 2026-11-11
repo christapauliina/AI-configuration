@@ -1,0 +1,123 @@
+/* --------------------------------------------------
+   1. VITEPRESSIN VIRALLISET MITTAMUUTTUJAT
+   -------------------------------------------------- */
+:root {
+  /* Sivupalkin kiinteä leveys */
+  --vp-sidebar-width: 260px;
+  
+  /* Poistetaan oikean reunan outline-alueen tilavaraus kokonaan */
+  --vp-layout-max-width: 100%;
+}
+
+/* --------------------------------------------------
+   2. YLÄPALKKI (NAVBAR)
+   -------------------------------------------------- */
+/* Pidetään yläpalkki kiinteästi ruudun ylälaidassa */
+.VPNav {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  z-index: 50 !important;
+  background-color: var(--vp-nav-bg-color) !important;
+}
+
+.VPNavBar {
+  position: relative !important;
+  transform: none !important;
+}
+
+/* Sallitaan navigaatiosisällön mukautua kapeaan leveyteen */
+.VPNavBar .wrapper {
+  padding: 0 16px !important;
+}
+
+.VPNavBar .container {
+  max-width: 100% !important;
+}
+
+.VPNavBar .content {
+  justify-content: flex-end !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.VPNavBarTitle {
+  display: none !important;      
+}
+
+/* TÄMÄ ON KORJAUS: Pakotetaan linkkivalikko näkyviin myös kapealla ruudulla */
+.VPNavBarMenu {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  flex-wrap: wrap !important; /* Sallii siistin rivityksen jos ikkuna on todella kapea */
+  gap: 0px !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* Erotinviivat linkkien väliin */
+.VPNavBarMenu .VPNavBarMenuLink:not(:last-child)::after {
+  content: "|";
+  margin-left: 10px;
+  margin-right: 10px;
+  color: var(--vp-c-divider);
+}
+
+/* Linkkien napakka koko ja välistys, jotta mahtuu pieneen tilaan */
+.VPNavBarMenuLink {
+  padding: 0 4px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+
+/* Piilotetaan hampurilaisvalikot, mobiilipalkit ja teemakytkimet */
+.VPNavBarHamburger,
+.VPNavScreen,
+.VPLocalNav,
+.VPLocalNavOutlineDropdown,
+.VPNavScreenMenu {
+  display: none !important;
+}
+
+/* --------------------------------------------------
+   3. SIVUPALKKI
+   -------------------------------------------------- */
+/* Pakotetaan sivupalkki aina näkyviin ja alkamaan yläpalkin alta */
+.VPSidebar {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  top: var(--vp-nav-height) !important;
+  height: calc(100vh - var(--vp-nav-height)) !important;
+  width: var(--vp-sidebar-width) !important;
+  z-index: 20 !important;
+}
+
+/* --------------------------------------------------
+   4. SISÄLTÖALUE (DOKUMENTTI)
+   -------------------------------------------------- */
+/* Pääkontti: alkaa yläpalkin alta ja väistää sivupalkkia aina */
+.VPContent {
+  padding-top: var(--vp-nav-height) !important;
+}
+
+.VPContent.has-sidebar {
+  padding-left: var(--vp-sidebar-width) !important;
+}
+
+/* Nollataan artikkelin keskitys: teksti alkaa siististi sivupalkin vierestä */
+.VPDoc.has-sidebar .container {
+  margin: 0 !important;
+  padding-left: 48px !important;
+  padding-right: 48px !important;
+  max-width: 100% !important;
+}
+
+.VPDoc.has-sidebar .content-container {
+  max-width: 860px !important; /* Miellyttävä lukuleveys koodille ja tekstille */
+  margin: 0 !important;
+}

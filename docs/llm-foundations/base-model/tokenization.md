@@ -1,4 +1,4 @@
-## Tokenization
+# Tokenization
 Before feeding the training data to a model, the data must be transformed into a form that a machine can understand. In a wild simplification, the raw training data is first broken down into a sequence of symbols known as tokens, assigned a numerical ID for each token, and used to create a vocabulary for the model. Regarding tokenization, there are two main things to consider — what size the tokens are and how many will fit into the model's vocabulary. Both play a big part in the model's performance and are tightly coupled to each other.
 
 ### Tokenizer

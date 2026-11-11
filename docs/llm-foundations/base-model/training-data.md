@@ -1,4 +1,4 @@
-## Training data
+# Training data
 
 Training data is the data that we feed to a model in its pre-training phase. Through training data, a model learns the structure of language, gains factual knowledge, and captures the semantic relationships between words. If you want to build a multimodal model, which can generate other forms of answers (ect. pictures) or multilingual model, other types of content and languages should be present in training material. The quality and quantity of training data are major factors in a model's performance.
 
