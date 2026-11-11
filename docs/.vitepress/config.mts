@@ -23,7 +23,7 @@ export default defineConfig({
           link: '/',
         },
         {
-          text: 'AI Fundamentals home', 
+          text: 'AI Fundamentals', 
           link: '/llm-foundations/',
         },
         {
