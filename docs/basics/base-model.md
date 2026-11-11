@@ -96,20 +96,20 @@ A vocabulary that is too large in relation to the model's dimensions reserves bi
 
 ## Pre-training
 
-Pre-training is the main training phase of the base model — the computationally expensive process where the model learns from the prepared training data. At its core, pre-training is a simple task: predict the next token. Given a sequence of tokens, the model is trained to predict what comes next. This is repeated across hundreds of billions or trillions of tokens, and through this process, the model gradually learns grammar, facts, reasoning patterns, and the relationships between concepts.
+Pre-training is a computationally expensive process, and designing a base model typically starts by creating a compute budget. The required compute is measured in FLOPs (Floating Point Operations), which quantify the total amount of computation. As a rule of thumb, the FLOPs required to train a model is:
 
-Despite the simplicity of the objective, the scale of the operation is enormous. Training a frontier model today requires thousands of GPUs or TPUs running in parallel for weeks or months, and the energy and hardware costs can run into the tens or hundreds of millions of dollars.
+***Amount of Computation, C (FLOPs) ≈ 6 · N · D***
 
-### Context length
-One important parameter defined before training begins is the context length — the maximum number of tokens the model can "see" at once. A longer context window allows the model to consider more text when making predictions, which is useful for tasks like summarizing long documents or maintaining coherence over long conversations. However, the computational cost of attention scales quadratically with sequence length, meaning doubling the context length roughly quadruples the cost of processing each sequence. Most models are trained with a fixed context length, though there are techniques that extend it after the fact.
+where N is the parameter count and D is the number of tokens in the training data. The equation is a simplification, and the ratio 6 can be different in a few different situations but it holds quite well for standard architectures.
 
-### Learning dynamics
-Training does not happen at a constant pace. The learning rate — how aggressively the model updates its weights based on each batch of data — is carefully scheduled across the training run. It typically starts low, ramps up, and then gradually decays toward the end of training. Getting this schedule right matters: too high a learning rate can cause the training to become unstable, while too low a rate wastes compute.
+In reality, hardware cannot run at its theoretical peak capacity because training is limited by VRAM memory bandwidth, communication latency, and GPU idling. Therefore, training pipelines are evaluated using MFU (Model FLOPs Utilization), which is the ratio of actual model throughput to theoretical peak hardware FLOPS, where FLOPS (with a capital S) is Floating Point Operations per second, a measurement of computational efficiency of the GPU. MFU typically floats between 35% and 45%, depending on the optimization of the code, I/O operations, and networks. The best pipelines reach 50% to 60% utilization, and an MFU under 30% is regarded as low. If you have an MFU of 50%, you need to provision twice as much compute capacity relative to the required FLOPs.
 
-Training runs at this scale are also susceptible to sudden instabilities — sharp spikes in the loss that can derail training. Teams monitor training closely and save checkpoints (snapshots of the model's weights) throughout, so that training can be resumed from a stable point if something goes wrong rather than starting over entirely.
+## Context Window & Data Packing
 
-### What the model learns
-By the end of pre-training, the model has not been taught to follow instructions, have a conversation, or perform any specific task. What it has learned is a deep statistical model of language: which words and concepts tend to appear together, how sentences are structured, and a broad base of factual knowledge encoded in its weights. This is why pre-training produces a base model — powerful and knowledgeable, but not yet useful for a specific purpose. That comes next, in post-training.
+Before starting the pre-training, the model's context window size must be decided and the training data needs to be packed accordingly. The size of the context window defines how much the model can "see" at once. A longer context window allows the model to consider longer inputs when producing outputs, which is especially beneficial for tasks that need to process long texts for coherent outputs, such as summarizing or analyzing long texts, or having long conversations with the model.
+
+However, doubling the context window quadruples the compute required for processing the sequence. With long context windows (> 8k), sequence processing starts consuming a large share of total compute, increasing the FLOPs needed for training the model beyond 6ND. At the extremes, really long and really short context windows decrease the MFU and need more complex maneuvers in pre-training in order to keep training efficient and costs moderate.
+
 ## Wrap-up
 
 As a final thought, each decision on building a base model must be viewed as part of a whole rather than in isolation. For most use cases below the frontier, performance targets can largely be met simply by scaling up model size. In practice financial constraints make this a non-option for many builders — which is exactly why architectural choices and training efficiency matter. Furthermore, as technology advances and collective knowledge grows, training base models will likely become somewhat cheaper. I personally believe this will lead to a broader rollout of domain-specific base models across various industries. 
