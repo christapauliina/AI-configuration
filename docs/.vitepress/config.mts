@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "AI -configuration",
   description: "Documentation and guide for LLM development",
+  base: '/AI-configuration/',
 
   themeConfig: {
     nav: [
