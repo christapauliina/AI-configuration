@@ -6,7 +6,7 @@ In this section, we will explore what goes into creating a base model: what kind
 
 This is not a deep dive into neural networks or transformes. It is simply a demonstrative look at different engineering tactics in base model creation that affect the final model outcome, so there will be some simplifycations pointed in the deeper tecnhical aspects.
 
-## Table of Contents
+### Table of Contents
 ### Architecture
 ### Training Data
 ### Tokenization

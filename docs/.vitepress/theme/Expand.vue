@@ -35,7 +35,7 @@ const isExpanded = ref(false)
   margin: 6px 0;
 }
 
-/* Suljettu nappi: vaalea harmaa tausta, musta teksti */
+/* Closed button*/
 .expand-trigger {
   background-color: #f1f1f1;
   color: #111111;
@@ -52,15 +52,15 @@ const isExpanded = ref(false)
   user-select: none;
 }
 
-/* Hover-tila: hieman tummempi harmaa ja selkeämpi reunus */
+/* Hover */
 .expand-trigger:hover {
   background-color: #e5e5e5;
   border-color: #888888;
 }
 
-/* Aktiivinen (avattu) nappi: täysmusta tausta ja valkoinen teksti */
+/* Opened button: */
 .is-active .expand-trigger {
-  background-color: #111111;
+  background-color: #888888;
   color: #ffffff;
   border-color: #111111;
 }

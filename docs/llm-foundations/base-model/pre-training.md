@@ -1,6 +1,15 @@
 # Pre-training
 
+<br>
+<Expand info="This chapter abstracts away much of the underlying neural network theory and linear algebra to keep the focus on the key consepts.">Note: </Expand>
+<br>
 
+### What actually happens in pre-training inside the model?
+In pre-training, packed training data sequences are passed through the neural network in batches. Each token in the model's vocabulary is mapped to a vector, where every component reflects the knowledge and meaning associated with that token. The neural network consists of billions of parameters—weights in each node that transform the knowledge attached to the tokens by relating them to other tokens in the sequence. After the batch of sequences has gone through the network, the model attempts to predict the next token.
+
+Because the correct token is already known as it is part of the sequence, a loss function calculates the exact error between the model's predictions and the true outcomes. Backpropagation then calculates the direction and magnitude—the gradient—by which each weight should be adjusted for more accurate results. The network's weights are then updated based on these gradients by the optimizer, and another batch of training sequences is passed through the model. 
+
+This continuous cycle of transforming tokens, calculating the error, deriving gradients via backpropagation, and updating the weights makes the model increasingly accurate over time
 
 ### Amount of Computation needed
 
@@ -24,23 +33,48 @@ The most common approach is sequence packing, where multiple documents and texts
 
 Differentiating two documents can be done by using an attention mask, where the model cannot see more than one document at a time although they are in the same input sequence, or by simply inserting an end-of-text token between documents. With end-of-text tokens, the model can still 'see' both documents, but learns to differentiate them from each other as training progresses. Segment attention with an attention mask creates a better outcome, but is more complex to implement. There is always the option of padding, where one document is placed in one input sequence and any remaining positions are filled with empty tokens. Padding is computationally a quite inefficient option, and it is rarely used.
 
+### Batching 
+
+TOKENISAATTORIIN VECTORS/EMBEDDING
+
 ### Hyperparameters and Learning Strategy
-<br>
-<Expand info="This chapter abstracts away much of the underlying neural network theory and linear algebra to keep the focus on the key consepts. Optional term explanations are provided for readers who want a bit more depth. – you can skip them if you prefer the high-level view.">Note: </Expand>
-<br>
 
-Unlike in traditional machine learning, overfitting and underfitting don't play the same role when training an LLM. Training is stopped when further improvements are no longer worth the computational cost, not when there is nothing left to learn. Since there is always potential left on the table, underfitting is the default state for LLMs. Overfitting, on the other hand, is rare, because most training sequences pass through the model only once, giving the model little chance to memorize the text. A notable exception is repeated data: when the same information appears many times in the training data, the model may end up memorizing it word for word. 
 
-Since overfitting and underfitting are rarely the problem, the real risks lie in training anomalies. Training can become unstable, causing a lasting drop in model performance or even diverging completely, or it can simply be inefficient. In all cases, a significant share of the computational budget goes to waste, and in the worst-case scenario, there is no budget left to restart training from scratch.
+Unlike in traditional machine learning, overfitting and underfitting don't play the same role when training an LLM. Training is stopped when further improvements are no longer worth the computational cost, not when there is nothing left to learn. Since there is always potential left on the table, underfitting is the default state for LLMs. Overfitting, on the other hand, is rare, because most training sequences pass through the model only once, giving the model little chance to memorize the text. A notable exception is repeated data: when the same information appears many times in the training data, the model may end up memorizing it word for word.
 
+When defining training hyperparameters and training strategies, there are four key things to consider: optimizer, learning rate, training precision and gradient clipping. Each one of them has the power to create training anomalies, which are the real risks in training an LLM. Training anomalies can mean inefficient training or the training diverging completely (crashing beyond the point of recovery). In either case, a significant share of the computational budget goes to waste, and in the worst-case scenario, there is no budget left to restart training from scratch.
+
+#### Optimizer
+
+As backpropagation calculates the gradients, which indicate the magnitude and direction in which the weights should be adjusted, the optimizer is the component that changes the values of the weights inside the neural network. If the gradients were used as such to adjust the weights, training would have a high chance of crashing, stagnating or oscillating.
+
+In training stagnation, the model stops learning too early. The weights get stuck in a flat region, such as a so-called "saddle point", where the gradients are close to zero. As a result, the updates become tiny and learning practically stops, even though a bigger adjustment would push the model past this point and improve the results greatly. Training oscillation is quite the opposite. The model attempts to learn "too much" at once, causing the weights to jump erratically across the optimization landscape. Because the adjustments are too large, the weights bounce back and forth—overshooting the target over and over—and the optimal point is left untouched.
+
+To control the adjustment of weights in a manner that prevents oscillation and stagnation, the optimizer keeps a memory of each parameter's past gradients. This memory contains two key pieces of information: the average direction the gradients have been pointing, known as momentum, and the average magnitude of the gradients, known as variance.
+
+If the momentum has pushed the weights in the same direction multiple times, the optimizer accelerates and takes bigger steps in that direction, which effectively prevents stagnation. On the other hand, if the variance is high, meaning the gradients have been large, the optimizer decreases the step size for that specific parameter. Dampening the updates for volatile weights prevents them from acting erratically, which effectively prevents oscillation.
+
+#### Learning rate
+
+In addition to the gradient history, the optimizer is guided by a defined learning rate. If the learning rate is high, the optimizer adjusts the weights more by default; if the learning rate is low, the weight adjustments are proportionally smaller.
+
+Since the weights in a neural network are initialized randomly, the learning rate is set low at the beginning of training, as the momentum and variance values in the optimizer have not yet stabilized. As training progresses, the learning rate is raised to its peak. This is called the warm-up phase. At the peak learning rate, the model is actively adjusting the weights. Towards the end of training, as the model is approaching a general solution, the learning rate is lowered in the decay stage. The active adjustments of the learning rate (warm-up, peak, decay) prevent instability at the beginning, stagnation in the middle and oscillation at the end of training.
+
+#### Precision
+
+Models have billions of weights, and for each weight we have an individual gradient, and for each individual gradient we have the momentum and variance of that gradient stored in the optimizer. The way these attributes are stored in training has a big impact on overall memory consumption and the speed of calculations. To make calculations faster and save memory, most calculations in training are performed in 16-bit form (FP16 or BF16) instead of 32-bit form.
+
+In FP16, the maximum value a 16-bit float can represent is ~65,504, and if the values grows above that, the value does not "fit" into the format and is eventually represented by NaN (Not a Number) in the neural network (overflow). The same occurs with very small numbers, where FP16 rounds extremely small numbers to zero (underflow). If any gradient is NaN, it contaminates the whole neural network in just a few steps, giving every gradient a value of NaN (as the network works by matrix multiplication). This is called a NaN crash, and it kills the training run. If any gradient gets a value of 0, the weight of that gradient will not be adjusted in that round. If a large share of gradients gets a value of zero, learning can slow down or even stall in parts of the network.
+
+As overflow and underflow are major causes of failed training, FP16 representation is nowadays usually replaced by BF16 representation, which is not as precise as FP16, but can represent much bigger and smaller values.
+
+#### Gradient clipping
+
+Even with a carefully tuned optimizer, gradients can grow too large, resulting in exploding gradients. A sudden spike in gradients can be caused by a learning rate that is too high, an unusual batch of data, or a combination of both. Exploding gradients may result in a loss spike, where the loss suddenly jumps up and the model's predictions get worse instead of better. The model can often recover from a loss spike on its own, but in the worst-case scenario, it leads to a lasting drop in model performance or full divergence, which can end in a NaN crash. To limit the damage of exploding gradients, a gradient clipping threshold must be defined. Gradient clipping scales the gradients down if they exceed the preset value, acting as a final safety mechanism that reduces the risk of loss spikes and overflows.
 
 ### Training distribution
 
-
-
-
-### Hyperparameters and Learning strategy
-
+### Small scale runs
 
 ### Training loop
 3. Esitestit ja mittakaavakokeet (Small-Scale Runs)
@@ -48,19 +82,3 @@ Kukaan ei aja täyttä klusteria kylmiltään. Ennen varsinaista ajoa suoritetaa
 
 Muistin ja vakauden profilointi: Varmistetaan, että malli mahtuu VRAMiin (OOM-virheiden eliminointi) ja mitataan todellinen MFU (Model FLOPs Utilization). Jos MFU jää alle 40–50 %:n, rinnakkaistusstrategiaa ja tiedonsiirto-operaatioita viilataan.
 
-Loss-käyrän ennustettavuus: Ajetaan muutama sata tai tuhat askelta ja tarkistetaan, että häviö (cross-entropy loss) laskee tasaisesti odotetulla tavalla.
-
-4. Koulutussilmukan ajo (The Main Loop)
-Varsinainen koulutus pyörii päivistä useisiin kuukausiin. Silmukka etenee askel kerrallaan:
-
-Datan lataus (Dataloader): Esipakattuja binääritiedostoja luetaan levyltä suoraan muistiin (usein memmap-tekniikalla ilman ylimääräistä prosessointia).
-
-Forward Pass: Malli laskee logits-arvot syötetyille sekvensseille. FlashAttention huolehtii huomiomatriisien muistitehokkaasta laskennasta.
-
-Loss-laskenta: Lasketaan seuraavan tokenin ennustamisen ristientropia (Next-Token Prediction).
-
-Backward Pass: Lasketaan gradientit suhteessa mallin painoihin.
-
-Gradient Clipping: Gradienttien normi rajataan (tyypillisesti arvoon 1.0), jotta estetään räjähtävät gradientit (gradient explosion).
-
-Optimizer Step: Päivitetään painot hajautetusti (esim. ZeRO/FSDP).
