@@ -12,4 +12,4 @@ When we talk about a model, we mean a standalone LLM that has no access to anyth
 
 Together, these layers make up the harness: the surrounding configuration and application logic that governs how a model or agent behaves in a real system.
 
-All the source code in C# can be found on GitHub here: 
+All the source code in C# can be found on GitHub here: (https://github.com/christapauliina/ai-configuration-examples/tree/master)

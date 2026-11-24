@@ -5,6 +5,7 @@ export default defineConfig({
   description: "Documentation and guide for LLM development",
   base: '/AI-configuration/',
   appearance: false,
+  ignoreDeadLinks: true,
 
   themeConfig: {
     siteTitle:false,

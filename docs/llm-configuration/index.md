@@ -6,7 +6,7 @@ This section builds on LLM Foundations. Reading it first is optional, but useful
 
 ## Goals
 
-This section explores different ways to configure your AI models and agents. Each chapter pairs a short knowledge base with a practical demonstration. To keep the focus on core principles and workflows, the examples are intentionally straightforward. The demonstrations are illustrated with screenshots from the demo applications and the full source code is available on [GitHub](LINK). All demos run on the  GPT-5.2 model deployed via Microsoft Foundry.
+This section explores different ways to configure your AI models and agents. Each chapter pairs a short knowledge base with a practical demonstration. To keep the focus on core principles and workflows, the examples are intentionally straightforward. The demonstrations are illustrated with screenshots from the demo applications and the full source code is available on [GitHub](https://github.com/christapauliina/ai-configuration-examples/tree/master). All demos run on the  GPT-5.2 model deployed via Microsoft Foundry.
 
 ### Contents
 
