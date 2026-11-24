@@ -3,20 +3,19 @@
 A comprehensive technical guide and reference for large language model development, combining theoretical foundations with practical, code-level configuration patterns.
 
 This repository hosts the source documentation and VitePress site published at:  
-[AI Configuration Documentation](https://christapauliina.github.io/AI-configuration/)
+[AI Configuration Documentation](https://christapauliina.github.io/AI-configuration/llm-configuration/)
 
 Accompanying C# / .NET 10 runnable code examples:  
 [AI Configuration Examples (.NET 10)](https://github.com/christapauliina/ai-configuration-examples)
+
 ---
 
 ## Purpose and Scope
 
-Most applications do not train machine learning models from scratch. Instead, developers consume pre-trained foundation models and adapt them to specific problem domains through configuration layers. These range from prompt engineering and inference parameter tuning to runtime tool calling, external Model Context Protocol (MCP) servers, and multi-agent systems.
+Building modern AI applications centers on configuring and orchestrating foundation models. This project connects the theoretical concepts of LLMs directly to practical, runnable code across two areas:
 
-The objective of this project is to bridge the gap between high-level conceptual explanations and low-level source code. It is structured into two main sections:
-
-1. **AI Fundamentals**: Theoretical grounding on how foundation models are constructed, pre-trained, and aligned. This section establishes the mechanical intuition for why models respond to downstream configurations the way they do.
-2. **AI Configuration**: Hands-on examination of configuration layers, paired with practical code demonstrations, token consumption analysis, and architectural trade-offs.
+1. **AI Fundamentals**: The mechanics behind foundation models (architecture, training data, tokenization, and alignment) to understand the roots of model behavior.
+2. **AI Configuration**: Hands-on configuration layers—from prompt boundaries and inference parameters to local tools, MCP servers, and multi-agent orchestration—with a focus on token efficiency and code implementations.
 
 ---
 
@@ -37,7 +36,7 @@ Detailed breakdowns of configuration patterns paired with execution traces, real
 
 * **Model - Memory**: Managing multi-turn state via explicit conversation histories and context window pruning.
 * **Model - System Prompts**: Defining agent roles, behavioral steering, and prompt boundary enforcement.
-* **Model - Parameters**: Determinism vs variance control (`Temperature`, `TopP`, `MaxOutputTokens`) and reasoning effort handling.
+* **Model - Parameters**: Determinism vs variance control and reasoning effort handling.
 * **Agent - Local Tools**: Exposing local function calls via schema extraction and runtime invocation middleware.
 * **Agent - MCP (Model Context Protocol)**: Integrating external tool providers over stdio, comparing token footprints of general-purpose vs targeted custom MCP servers.
 * **Advanced - Multi-Agent Orchestration**: Coordinating autonomous agents in hierarchical research, analysis, and generation pipelines.
