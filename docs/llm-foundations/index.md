@@ -17,12 +17,13 @@ To keep things approachable, some technical and mathematical details are simplif
 ### Contents
 
 **1. Base model**  
-    1.1 Architechture  
-    1.2 Training Data  
-    1.3 Tokenization  
-    1.4 Pre-Training  
-    1.5 Summary  
+- Architechture  
+- Training Data  
+- Tokenization  
+- Pre-Training   
+
 **2. Aligned model**  
-    2.1 adasdlaskjda  
-    2.2 alksdjalskdjasd  
+*in progress*
+
 **3. Advanded technologies and future trends**  
+*in progress*

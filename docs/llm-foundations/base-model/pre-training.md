@@ -24,7 +24,7 @@ In reality, hardware cannot run at its theoretical peak capacity because trainin
 ### Defining Context Window Lenght
 Before starting the pre-training, the model's context window size must be decided and the training data needs to be packed accordingly. The size of the context window defines how much the model can "see" at once. A longer context window allows the model to consider longer inputs when producing outputs, which is especially beneficial for tasks that need to process long texts for coherent outputs, such as summarizing or analyzing long texts, or having long conversations with the model.
 
-However, doubling the context window quadruples the compute required for processing the sequence. With long context windows (> 8k), sequence processing starts consuming a large share of total compute, increasing the FLOPs needed for training the model beyond 6ND. At the extremes, really long and really short context windows decrease the MFU and need more complex maneuvers in pre-training in order to keep training efficient and costs moderate.
+However, doubling the context window quadruples the compute required for processing the sequence. With long context windows (> 8k), sequence processing starts consuming a large share of total compute, increasing the FLOPs needed for training the model beyond 6ND. At the extremes, really long and really short context windows decrease the MFU and need more complex maneuvers in pre-training in order to keep training efficient and costs moderate. 
 
 ### Data Packing
 When the size of the context window is decided, the training data is packed into sequences sized to that context window, as the model can only process inputs of that specific length at once. There are a few options for how this data packing is done, considering that documents and individual texts in the training dataset are rarely the exact size of the context window.
@@ -35,7 +35,7 @@ Differentiating two documents can be done by using an attention mask, where the 
 
 ### Batching 
 
-TOKENISAATTORIIN VECTORS/EMBEDDING
+*In progress*
 
 ### Hyperparameters and Learning Strategy
 
@@ -73,12 +73,8 @@ As overflow and underflow are major causes of failed training, FP16 representati
 Even with a carefully tuned optimizer, gradients can grow too large, resulting in exploding gradients. A sudden spike in gradients can be caused by a learning rate that is too high, an unusual batch of data, or a combination of both. Exploding gradients may result in a loss spike, where the loss suddenly jumps up and the model's predictions get worse instead of better. The model can often recover from a loss spike on its own, but in the worst-case scenario, it leads to a lasting drop in model performance or full divergence, which can end in a NaN crash. To limit the damage of exploding gradients, a gradient clipping threshold must be defined. Gradient clipping scales the gradients down if they exceed the preset value, acting as a final safety mechanism that reduces the risk of loss spikes and overflows.
 
 ### Training distribution
-
+*in progress*
 ### Small scale runs
-
+*in progress*
 ### Training loop
-3. Esitestit ja mittakaavakokeet (Small-Scale Runs)
-Kukaan ei aja täyttä klusteria kylmiltään. Ennen varsinaista ajoa suoritetaan:
-
-Muistin ja vakauden profilointi: Varmistetaan, että malli mahtuu VRAMiin (OOM-virheiden eliminointi) ja mitataan todellinen MFU (Model FLOPs Utilization). Jos MFU jää alle 40–50 %:n, rinnakkaistusstrategiaa ja tiedonsiirto-operaatioita viilataan.
-
+*in progress*
